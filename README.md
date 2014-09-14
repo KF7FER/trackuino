@@ -1,6 +1,6 @@
 Trackuino
 =========
-Firmware to turn your Arduino into an APRS tracker. This is based on the [John Boile's](https://github.com/johnboiles/trackuino) port of the [original mercurial repo](http://code.google.com/p/trackuino) by EA5HAV Javi.
+Firmware to turn your Arduino into an APRS tracker. This is based on [John Boile's](https://github.com/johnboiles/trackuino) port of the [Trackuino](http://code.google.com/p/trackuino) by EA5HAV Javi.
 
 Board support
 -------------
