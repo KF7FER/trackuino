@@ -1,6 +1,6 @@
 Trackuino
 =========
-Firmware to turn your Arduino into an APRS tracker. This is a fork of the [original mercurial repo](http://code.google.com/p/trackuino) by EA5HAV Javi.
+Firmware to turn your Arduino into an APRS tracker. This is based on the [John Boile's](https://github.com/johnboiles/trackuino) port of the [original mercurial repo](http://code.google.com/p/trackuino) by EA5HAV Javi.
 
 Board support
 -------------
@@ -8,6 +8,7 @@ Arduinos based on ATmega328 (e.g. Uno), ATmega32u4 (e.g. Arduino Leonardo), and 
 
 * [Official Trackuino Shield](https://code.google.com/p/trackuino/wiki/TrackuinoShield22)
 * [TinyTrackuino](https://github.com/johnboiles/tinytrackuino)
+* [leoTracker](https://github.com/KF7FER/leoTracker)
 
 Building with the Arduino IDE
 -----------------------------
