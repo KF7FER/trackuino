@@ -28,6 +28,15 @@
 // --------------------------------------------------------------------------
 
 // --------------------------------------------------------------------------
+// USB Configuration
+// --------------------------------------------------------------------------
+
+// Ok, configuration is a misnomer.  Basically if we are using USB we should
+// kill power after the board has been running for a certain amount of time
+// (just to help improve battery life)
+#define KILL_USB_TIME       10 * 60000UL
+
+// --------------------------------------------------------------------------
 // Modem config (afsk.cpp)
 // --------------------------------------------------------------------------
 

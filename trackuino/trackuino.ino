@@ -62,6 +62,7 @@
 #endif
 
 // include the library code:
+#include <avr/power.h>
 #include <LiquidCrystal.h>
 #include <Wire.h>
 
@@ -79,6 +80,12 @@
 static const uint32_t VALID_POS_TIMEOUT = 2000;  // ms
 
 // Module variables
+
+#ifdef KILL_USB_TIME
+unsigned long programStartTime = 0;
+boolean usb_alive              = true;
+#endif
+
 static int32_t next_aprs = 0;
 
 // Is the radio enabled?
@@ -99,6 +106,10 @@ LiquidCrystal lcd(LCD_PINS);
 
 void setup()
 {
+#ifdef KILL_USB_TIME
+  programStartTime = millis();
+#endif
+
   pinMode(LED_PIN, OUTPUT);
   pin_write(LED_PIN, LOW);
 
@@ -278,5 +289,14 @@ void loop()
 #endif
   }
 
+#ifdef KILL_USB_TIME
+ if (((millis() - KILL_USB_TIME) >= 0) && usb_alive) {
+   // Kill power to the USB after we've been running for more than 10 minutes
+   // (just to be more power friendly)
+   usb_alive = false;   
+   power_usb_disable();
+   }
+#endif
+  
   power_save(); // Incoming GPS data or interrupts will wake us up
 }
