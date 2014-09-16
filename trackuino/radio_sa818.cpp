@@ -54,9 +54,11 @@ void RadioSA818::ptt_on()
 {
   pin_write(PTT_PIN, HIGH);
   
+#ifdef PTT_RAISE_DELAY  
   // According to NiceRF we should wait "hundreds of millis" to
   // allow the unit to settle down before we actually transmit
   delay(PTT_RAISE_DELAY);
+#endif  
 }
 
 void RadioSA818::ptt_off()
