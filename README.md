@@ -23,7 +23,7 @@ On ATmega328 and other boards with only a single serial port, make sure to unplu
 External libraries used
 ----------------------------
 
-This build of Trackuio uses the following external libraries to use the leoTracker hardware:
+This build of Trackuio uses the following external libraries:
 
 * [OneWire Library (by PJRC)](https://www.pjrc.com/teensy/td_libs_OneWire.html)
 * [DallasTemperature (by Miles Burton)](http://milesburton.com/Dallas_Temperature_Control_Library)
