@@ -23,6 +23,13 @@ void sensors_setup();
 unsigned long sensors_aref();
 int sensors_int_lm60();
 int sensors_ext_lm60();
+int sensors_int_ds18b20();
+int sensors_ext_ds18b20();
+
+// If using the DS18b20, Call this function at least 750ms before trying to
+// poll for data
+void request_temperatures();
+
 int sensors_vin();
 
 #endif // ifndef __SENSORS_AVR_H__

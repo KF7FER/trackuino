@@ -81,6 +81,18 @@ void aprs_send()
   ax25_send_string(temp);
 #endif
 #endif
+#ifdef USE_ONEWIRE_TEMP
+#ifndef INTERNAL_DS18B20_DISABLED
+  ax25_send_string("/Ti=");
+  snprintf(temp, 6, "%d", sensors_int_ds18b20());
+  ax25_send_string(temp);
+#endif
+#ifndef EXTERNAL_DS18B20_DISABLED
+  ax25_send_string("/Te=");
+  snprintf(temp, 6, "%d", sensors_ext_ds18b20());
+  ax25_send_string(temp);
+#endif
+#else
 #ifndef INTERNAL_LM60_DISABLED
   ax25_send_string("/Ti=");
   snprintf(temp, 6, "%d", sensors_int_lm60());
@@ -90,6 +102,7 @@ void aprs_send()
   ax25_send_string("/Te=");
   snprintf(temp, 6, "%d", sensors_ext_lm60());
   ax25_send_string(temp);
+#endif
 #endif
   ax25_send_string("/V=");
   snprintf(temp, 6, "%d", sensors_vin());

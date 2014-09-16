@@ -38,6 +38,19 @@
 #define INTERNAL_REFERENCE_VOLTAGE 1100L
 #endif
 
+// Are we using Dallas 1-wire hardware?
+#ifdef USE_ONEWIRE_TEMP
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
+// Setup a oneWire instance to communicate with any OneWire devices
+// (not just Maxim/Dallas temperature ICs)
+OneWire ds(ONEWIRE_PIN);
+ 
+// Pass our oneWire reference to Dallas Temperature.
+DallasTemperature sensors(&ds);
+#endif
+
 /*
  * sensors_aref: measure an external voltage hooked up to the AREF pin,
  * optionally (and recommendably) through a pull-up resistor. This is
@@ -71,6 +84,52 @@ unsigned long sensors_aref()
 #endif
 
 #ifndef USE_AREF
+#ifdef USE_ONEWIRE_TEMP
+// Support for the DS18b20 temperature sensor (OneWire) 
+
+// Call this function before using temperature data so any devices can
+// be polled and the data made ready for use
+void request_temperatures() {
+  sensors.requestTemperatures(); // Send the command to get temperatures
+}
+
+void sensors_setup() {
+  sensors.begin();                // Start the library
+  delay(ONEWIRE_STARTUP_DELAY);   // Need to wait a moment?
+  
+  // Let's load some data so the software will be able to have data to report
+  // if it needs it
+  request_temperatures();
+  
+#ifdef DEBUG_SENS
+  delay(600);  // Probably should be in config eh?
+#else
+  delay(100);  // Hard code a short delay here for debugging
+#endif
+}
+
+int sensors_ds18b20(int sensorNumber) {
+  float tempC;
+  long  tempLong;
+  
+  tempC = sensors.getTempCByIndex(sensorNumber);         // Query specified sensor
+  if (TEMP_UNIT == 3)
+    tempC = DallasTemperature::toFahrenheit(tempC); // Convert to F
+  
+  // Do I need to do this?
+  tempLong = (long)(tempC * 100.0);
+  // Pass it back as an integer
+  return (int)(tempLong) + CALIBRATION_VAL;
+}
+
+int sensors_ext_ds18b20() {
+  return sensors_ds18b20(1);
+  }
+  
+int sensors_int_ds18b20() {
+  return sensors_ds18b20(0);
+  }
+#else
 void sensors_setup()
 {
   pinMode(INTERNAL_LM60_VS_PIN, OUTPUT);
@@ -110,6 +169,7 @@ int sensors_int_lm60()
 {
   return sensors_lm60(INTERNAL_LM60_VS_PIN, INTERNAL_LM60_VOUT_PIN);
 }
+#endif
 
 int sensors_vin()
 {

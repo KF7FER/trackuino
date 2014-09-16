@@ -55,6 +55,17 @@
 
 // include the library code:
 #include <LiquidCrystal.h>
+#include <Wire.h>
+
+#ifdef USE_ONEWIRE_TEMP
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#endif
+
+#ifdef USE_MICROSD
+#include "microsd.h"
+#include <SdFat.h>
+#endif
 
 // Module constants
 static const uint32_t VALID_POS_TIMEOUT = 2000;  // ms
@@ -95,7 +106,23 @@ void setup()
 #endif
   sensors_setup();
 
+#ifdef USE_MICROSD
+  microsd_setup();
+#endif  
+  
 #ifdef DEBUG_SENS
+#ifdef USE_ONEWIRE_TEMP
+#ifndef INTERNAL_DS18B20_DISABLED
+  DEBUG_SERIAL.print("Ti=");
+  DEBUG_SERIAL.print(sensors_int_ds18b20());
+  DEBUG_SERIAL.print(", ");
+#endif
+#ifndef EXTERNAL_DS18B20_DISABLED
+  DEBUG_SERIAL.print("Te=");
+  DEBUG_SERIAL.print(sensors_ext_ds18b20());
+  DEBUG_SERIAL.print(", ");
+#endif
+#else
 #ifndef INTERNAL_LM60_DISABLED
   DEBUG_SERIAL.print("Ti=");
   DEBUG_SERIAL.print(sensors_int_lm60());
@@ -105,6 +132,7 @@ void setup()
   DEBUG_SERIAL.print("Te=");
   DEBUG_SERIAL.print(sensors_ext_lm60());
   DEBUG_SERIAL.print(", ");
+#endif
 #endif
   DEBUG_SERIAL.print("Vin=");
   DEBUG_SERIAL.println(sensors_vin());
@@ -164,6 +192,21 @@ void get_pos()
 
 void loop()
 {
+#if defined (RADIO_WARMUP_TIME) || defined(USE_ONEWIRE_TEMP)
+  // Time to power up the radio?
+  if (((int32_t) (millis() - next_aprs + RADIO_WARMUP_TIME) >= 0) && !radioEnabled) {
+#ifdef RADIO_ENABLED_PIN
+      // Need to put this in the Radio class
+      pin_write(RADIO_ENABLED_PIN, HIGH);
+#endif
+
+#ifdef USE_ONEWIRE_TEMP
+      request_temperatures();
+#endif	  
+	  radioEnabled = true;
+  }
+#endif 
+
   // Time for another APRS frame
   if ((int32_t) (millis() - next_aprs) >= 0) {
 #ifndef GPS_DISABLED
@@ -171,6 +214,16 @@ void loop()
 #endif
 #ifdef LCD_ENABLED
     lcd.setCursor(0, 1);
+#ifdef USE_ONEWIRE_TEMP
+#ifndef INTERNAL_DS18B20_DISABLED
+    lcd.print("Ti=, ");
+    lcd.print(sensors_int_ds18b20());
+#endif
+#ifndef EXTERNAL_DS18B20_DISABLED
+    lcd.print("Te=, ");
+    lcd.print(sensors_ext_ds18b20());
+#endif
+#else	
 #ifndef INTERNAL_LM60_DIABLED
     lcd.print("Ti=, ");
     lcd.print(sensors_int_lm60());
@@ -178,6 +231,7 @@ void loop()
 #ifndef EXTERNAL_LM60_DISABLED
     lcd.print("Te=, ");
     lcd.print(sensors_ext_lm60());
+#endif
 #endif
     lcd.print("Vin=");
     lcd.print(sensors_vin());
