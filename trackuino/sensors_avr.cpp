@@ -178,7 +178,13 @@ int sensors_vin()
   delay(10);                     // This is needed when switching references
 
   uint16_t adc = analogRead(VMETER_PIN); 
+  
+  // Check the CPU speed here
+#if F_CPU > 8000000L  
   uint16_t mV = 5000L * adc / 1024;
+#else  
+  uint16_t mV = 3300L * adc / 1024;
+#endif  
    
   // Vin = mV * R2 / (R1 + R2)
   int vin = (uint32_t)mV * (VMETER_R1 + VMETER_R2) / VMETER_R2;

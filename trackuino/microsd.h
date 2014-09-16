@@ -14,22 +14,21 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
- 
-// Added configuration file so I could set DEBUG_PIN_INVERT per board
+
+#ifndef __MICROSD_H__
+#define __MICROSD_H__
+
+#include <stdint.h>
+#include <SdFat.h>
 #include "config.h"
 
-#ifndef __POWER_H__
-#define __POWER_H__
-
-#ifdef DEBUG_PIN_INVERT
-#define DEBUG_PIN_ON LOW
-#define DEBUG_PIN_OFF HIGH
-#else
-#define DEBUG_PIN_ON HIGH
-#define DEBUG_PIN_OFF LOW
+// data 
+#ifdef USE_MICROSD
+  extern SdFat  sd;                                     // File system object
+  extern SdFile logFile;                                // Log file
 #endif
 
-void power_save();
+// methods
+void microsd_setup();
 
-#endif // ifndef __POWER_H__
-
+#endif

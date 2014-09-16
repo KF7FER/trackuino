@@ -34,8 +34,11 @@
 // You must include a board config file that specifies the pins used by your
 // hardware.
 
+#include "config_board_leotrackerRevG.h" // Should be production configuration
+//#include "config_board_leotrackerRevF.h" // INTERNAL TEST UNIT ONLY
+//#include "config_board_leotrackerRevE.h" // leoTracker w/ HX1
 //#include "config_board_tiny_trackuino.h"
-#include "config_board_trackuino_shield.h"
+//#include "config_board_trackuino_shield.h"
 
 // --------------------------------------------------------------------------
 // APRS config (aprs.c)

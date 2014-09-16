@@ -46,6 +46,14 @@
 #include "sensors_avr.h"
 #include "sensors_pic32.h"
 
+// I stole these macros from one of the 32u4 bootloaders.  Needed because
+// I wired the leoTracker USB Activity LED "backwards".  I hope this will
+// be fixed with the new bootloader
+#define TX_LED_OFF()	PORTD |= (1<<5)
+#define TX_LED_ON()	    PORTD &= ~(1<<5)
+#define RX_LED_OFF()	PORTB |= (1<<0)
+#define RX_LED_ON()	    PORTB &= ~(1<<0)
+
 // Arduino/AVR libs
 #if (ARDUINO + 1) >= 100
 #  include <Arduino.h>
@@ -73,6 +81,9 @@ static const uint32_t VALID_POS_TIMEOUT = 2000;  // ms
 // Module variables
 static int32_t next_aprs = 0;
 
+// Is the radio enabled?
+static boolean radioEnabled = false;
+
 // initialize the library with the numbers of the interface pins
 #ifdef LCD_ENABLED
 LiquidCrystal lcd(LCD_PINS);
@@ -80,11 +91,22 @@ LiquidCrystal lcd(LCD_PINS);
 
 #define DEBUG_SERIAL Serial
 
+// Module variables for microSD support
+#ifdef USE_MICROSD
+  SdFat  sd;                                     // File system object
+  SdFile logFile;                                // Log file
+#endif
+
 void setup()
 {
   pinMode(LED_PIN, OUTPUT);
   pin_write(LED_PIN, LOW);
 
+  // Another hack because of the bootloader.  Remove these (and their definitions
+  // Once the leoTracker bootloader is fixed correctly.  
+  RX_LED_ON();
+  TX_LED_ON();
+  
   GPS_SERIAL.begin(GPS_BAUDRATE);
 
 #if defined(__AVR_ATmega32U4__) && (defined(DEBUG_GPS) || defined(DEBUG_RESET) || defined(DEBUG_MODEM) || defined(DEBUG_SENS) || defined(DEBUG_AX25))
@@ -242,6 +264,14 @@ void loop()
       power_save();
     }
 
+#ifdef RADIO_WARMUP_TIME
+#ifdef RADIO_ENABLED_PIN
+    // Again this should be part of the Radio class
+    pin_write(RADIO_ENABLED_PIN,  LOW);
+#endif
+	radioEnabled = false;
+#endif
+	
 #ifdef DEBUG_MODEM
     // Show modem ISR stats from the previous transmission
     afsk_debug();

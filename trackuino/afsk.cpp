@@ -34,6 +34,7 @@
 #include "afsk_pic32.h"
 #include "pin.h"
 #include "radio_hx1.h"
+#include "radio_sa818.h"
 #if (ARDUINO + 1) >= 100
 #  include <Arduino.h>
 #else
@@ -64,8 +65,13 @@ volatile static uint8_t sample_fifo_head = 0;            // empty when head == t
 volatile static uint8_t sample_fifo_tail = 0;
 volatile static uint32_t sample_overruns = 0;
 
-// The radio (class defined in config.h)
-static RadioHx1 radio;
+// The radio (class defined in config_board.h)
+#ifndef RADIO_CLASS
+// Assume the other boards use the stock radio module
+#define RADIO_CLASS RadioHx1
+#endif
+
+static RADIO_CLASS radio;
 
 volatile static unsigned int afsk_packet_size = 0;
 volatile static const uint8_t *afsk_packet;

@@ -14,22 +14,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
- 
-// Added configuration file so I could set DEBUG_PIN_INVERT per board
-#include "config.h"
 
-#ifndef __POWER_H__
-#define __POWER_H__
+#ifndef __RADIO_SA818_H__
+#define __RADIO_SA818_H__
 
-#ifdef DEBUG_PIN_INVERT
-#define DEBUG_PIN_ON LOW
-#define DEBUG_PIN_OFF HIGH
-#else
-#define DEBUG_PIN_ON HIGH
-#define DEBUG_PIN_OFF LOW
+#include "radio.h"
+
+class RadioSA818 : public Radio {
+  public:
+    virtual void setup();
+    virtual void ptt_on();
+    virtual void ptt_off();
+};
+
 #endif
-
-void power_save();
-
-#endif // ifndef __POWER_H__
-

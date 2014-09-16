@@ -20,6 +20,23 @@ Building with the Arduino IDE
 
 On ATmega328 and other boards with only a single serial port, make sure to unplug the GPS when uploading or flashing will fail with an error.
 
+External libraries used
+----------------------------
+
+This build of Trackuio uses the following external libraries to use the leoTracker hardware:
+
+* [OneWire Library (by PJRC)](https://www.pjrc.com/teensy/td_libs_OneWire.html)
+* [DallasTemperature (by Miles Burton)](http://milesburton.com/Dallas_Temperature_Control_Library)
+* [SdFat BETA (by Bill Greiman)](https://github.com/greiman/SdFat-beta)
+
+Status
+----------------------------
+
+Currently this software seems to work fine but has NOT been flight tested so use at your own risk.
+
+It looks like there are going to be resource issues attempting to keep all the current leoTracker features; it's going to be impossible to have Dallas OneWire sensors and the microSD and keep the USB boot loader; something will have to go (we are out of space in flash).  Most likely the bootloader and the board will feature the ability to be configured via microSD cards.
+
+
 Building at the command line
 ----------------------------
 A makefile is included for easy building and uploading outside the Arduino IDE. The `BOARD` environment variable needs to be specified so the makefile can know what board to compile for. For boards not included in the official Arduino IDE, you can set `BOARDSPATH` to point at a directory that has details about the board.
