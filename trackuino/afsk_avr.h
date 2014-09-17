@@ -84,6 +84,7 @@ void afsk_isr();
 void afsk_timer_setup();
 void afsk_timer_start();
 void afsk_timer_stop();
+void afsk_enable(bool status);
 #ifdef DEBUG_MODEM
 void afsk_debug();
 #endif

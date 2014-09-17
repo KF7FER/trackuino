@@ -25,6 +25,7 @@ class RadioSA818 : public Radio {
     virtual void setup();
     virtual void ptt_on();
     virtual void ptt_off();
+	virtual void enable(bool status);
 };
 
 #endif

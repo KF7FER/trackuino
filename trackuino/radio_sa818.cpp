@@ -65,3 +65,14 @@ void RadioSA818::ptt_off()
 {
   pin_write(PTT_PIN, LOW);
 }
+
+
+void RadioSA818::enable(bool status) 
+{
+#ifdef RADIO_ENABLED_PIN
+  if (status) 
+    pin_write(RADIO_ENABLED_PIN,  HIGH);
+  else
+    pin_write(RADIO_ENABLED_PIN,  LOW);
+#endif	
+}

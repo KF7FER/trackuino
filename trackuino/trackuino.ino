@@ -83,13 +83,13 @@ static const uint32_t VALID_POS_TIMEOUT = 2000;  // ms
 
 #ifdef KILL_USB_TIME
 unsigned long programStartTime = 0;
-boolean usb_alive              = true;
+bool usb_alive                 = true;
 #endif
 
 static int32_t next_aprs = 0;
 
 // Is the radio enabled?
-static boolean radioEnabled = false;
+static bool radioEnabled = false;
 
 // initialize the library with the numbers of the interface pins
 #ifdef LCD_ENABLED
@@ -228,15 +228,12 @@ void loop()
 #if defined (RADIO_WARMUP_TIME) || defined(USE_ONEWIRE_TEMP)
   // Time to power up the radio?
   if (((int32_t) (millis() - next_aprs + RADIO_WARMUP_TIME) >= 0) && !radioEnabled) {
-#ifdef RADIO_ENABLED_PIN
-      // Need to put this in the Radio class
-      pin_write(RADIO_ENABLED_PIN, HIGH);
-#endif
+    radioEnabled = true;
+	afsk_enable(radioEnabled);
 
 #ifdef USE_ONEWIRE_TEMP
       request_temperatures();
 #endif	  
-	  radioEnabled = true;
   }
 #endif 
 
@@ -276,10 +273,7 @@ void loop()
     }
 
 #ifdef RADIO_WARMUP_TIME
-#ifdef RADIO_ENABLED_PIN
-    // Again this should be part of the Radio class
-    pin_write(RADIO_ENABLED_PIN,  LOW);
-#endif
+    afsk_enable(false);
 	radioEnabled = false;
 #endif
 	

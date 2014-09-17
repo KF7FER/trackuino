@@ -254,3 +254,8 @@ void afsk_debug()
   sample_overruns = 0;
 }
 #endif
+
+void afsk_enable(bool status)
+{
+  radio.enable(status);
+}

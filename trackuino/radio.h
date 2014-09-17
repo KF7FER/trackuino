@@ -23,6 +23,7 @@ class Radio {
     virtual void setup() = 0;
     virtual void ptt_on() = 0;
     virtual void ptt_off() = 0;
+    virtual void enable(bool) = 0;
 };
 
 #endif
