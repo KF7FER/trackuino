@@ -407,6 +407,8 @@ void resetGPS() {
 // Exported functions
 //
 void gps_setup() {
+  int gps_success = 0;
+  
   strcpy(gps_time, "000000");
   strcpy(gps_aprs_lat, "0000.00N");
   strcpy(gps_aprs_lon, "00000.00E");
@@ -433,17 +435,21 @@ void gps_setup() {
 #endif
 
   // Set MAX-6 to flight mode
-  sendUBX(setNav, sizeof(setNav)/sizeof(uint8_t)); 
-  if (!getUBX_ACK(setNav)) 
-    while (1) {
-	  // Crude but I guess it works? We MUST be in flight mode
-	  // (And REQUIRES a GPS_LED_PIN if using a uBLOX?)
+  while (!gps_success) {
+    sendUBX(setNav, sizeof(setNav)/sizeof(uint8_t)); 
+    gps_success = getUBX_ACK(setNav);
+	if (!gps_success) {
+	  // Should find a better way to indicate a problem?
+#ifdef GPS_LED_PIN
       pin_write(GPS_LED_PIN, HIGH);
-      delay(200);
-
-      pin_write(GPS_LED_PIN, LOW);
-      delay(200);
+#endif	  
+      delay(500);
+	  }
 	}
+  
+#ifdef GPS_LED_PIN
+  pin_write(GPS_LED_PIN, LOW);
+#endif  
 
   // Finally turn off any NMEA sentences we don't need (in this case it's 
   // everything except GGA and RMC)
