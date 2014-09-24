@@ -89,7 +89,7 @@ bool usb_alive                 = true;
 static int32_t next_aprs = 0;
 
 // Is the radio enabled?
-static bool radioEnabled = false;
+bool radioEnabled = false;
 
 // initialize the library with the numbers of the interface pins
 #ifdef LCD_ENABLED
@@ -113,7 +113,7 @@ void setup()
   pinMode(LED_PIN, OUTPUT);
   pin_write(LED_PIN, LOW);
 
-  // Another hack because of the bootloader.  Remove these (and their definitions
+  // Another hack because of the bootloader.  Remove these (and their definitions)
   // Once the leoTracker bootloader is fixed correctly.  
   RX_LED_ON();
   TX_LED_ON();
@@ -225,12 +225,14 @@ void get_pos()
 
 void loop()
 {
-#if defined (RADIO_WARMUP_TIME) || defined(USE_ONEWIRE_TEMP)
+#if defined (RADIO_WARMUP_TIME) 
   // Time to power up the radio?
   if (((int32_t) (millis() - next_aprs + RADIO_WARMUP_TIME) >= 0) && !radioEnabled) {
     radioEnabled = true;
 	afsk_enable(radioEnabled);
 
+// NOTE: This is NOT good, if RADIO_WARMUP_TIME is not defined the OneWire bus
+// will never get new temperatures...
 #ifdef USE_ONEWIRE_TEMP
       request_temperatures();
 #endif	  
