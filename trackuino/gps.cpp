@@ -431,7 +431,7 @@ void gps_setup() {
 #ifdef GPS_LED_PIN
   // LED for GPS Status
   pinMode(GPS_LED_PIN,      OUTPUT);
-  pinMode(GPS_LED_PIN,      LOW);
+  pin_write(GPS_LED_PIN,    LOW);
 #endif
 
   // Set MAX-6 to flight mode
